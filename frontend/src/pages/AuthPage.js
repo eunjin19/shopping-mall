@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Login from "../components/Login"
 import Register from "../components/Regiseter"
 import './AuthPage.css';
+
 const AuthPage = ({ onAuthSuccess }) => {
   const [currentView, setCurrentView] = useState('login'); // 'login' 또는 'register'
 
