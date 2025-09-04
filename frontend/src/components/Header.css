@@ -1,0 +1,189 @@
+/* 네비게이션 바 전체 스타일 */
+.navbar {
+  background-color: white;
+  border-bottom: 1px solid #f0f0f0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+}
+
+/* 브랜드 로고/이름 */
+.navbar-brand {
+  flex-shrink: 0;
+}
+
+.navbar-brand a {
+  font-size: 24px;
+  font-weight: 300;
+  color: #333;
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+
+.navbar-brand a:hover {
+  color: #666;
+}
+
+/* 중앙 메뉴 */
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.navbar-menu-item {
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 8px 0;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.navbar-menu-item:hover {
+  color: #666;
+}
+
+.navbar-menu-item::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: #333;
+  transition: width 0.3s ease;
+}
+
+.navbar-menu-item:hover::after {
+  width: 100%;
+}
+
+/* 우측 아이콘 영역 */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.navbar-icon-btn {
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-icon-btn:hover {
+  color: #666;
+  background-color: #f8f8f8;
+}
+
+.navbar-icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* 모바일 햄버거 버튼 */
+.navbar-mobile-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: color 0.3s ease;
+}
+
+.navbar-mobile-btn:hover {
+  color: #666;
+}
+
+.navbar-mobile-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* 모바일 메뉴 */
+.navbar-mobile-menu {
+  display: none;
+  background-color: white;
+  border-top: 1px solid #f0f0f0;
+  padding: 20px 0;
+  transition: all 0.3s ease-in-out;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.navbar-mobile-menu.active {
+  display: block;
+  max-height: 400px;
+}
+
+.navbar-mobile-item {
+  display: block;
+  color: #333;
+  text-decoration: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 400;
+  transition: all 0.3s ease;
+}
+
+.navbar-mobile-item:hover {
+  color: #666;
+  background-color: #f8f8f8;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .navbar-menu {
+    display: none;
+  }
+  
+  .navbar-actions {
+    display: none;
+  }
+  
+  .navbar-mobile-btn {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0 16px;
+  }
+  
+  .navbar-content {
+    height: 56px;
+  }
+  
+  .navbar-brand a {
+    font-size: 20px;
+  }
+}

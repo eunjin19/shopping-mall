@@ -1,0 +1,205 @@
+/* 페이지 전체 레이아웃 (App 컴포넌트나 body에 적용) */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .main-content {
+    flex: 1;
+  }
+  
+  /* Footer 전체 스타일 */
+  .footer {
+    color: #d1d5db;
+    padding: 40px 0 20px 0;
+    margin-top: auto;
+    flex-shrink: 0;
+  }
+  
+  .footer .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    text-align: center;
+  }
+  
+  .footer p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.8;
+    line-height: 1.5;
+  }
+  
+  /* 브랜드 컬러와 매칭되는 스타일 */
+  .footer-enhanced {
+    color: #f9fafb;
+    padding: 60px 0 30px 0;
+    margin-top: auto;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  
+  .footer-enhanced::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+  
+  .footer-enhanced .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    margin-bottom: 30px;
+    text-align: left;
+  }
+  
+  .footer-section h3 {
+    color: #4d4c4c;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    position: relative;
+  }
+  
+  .footer-section h3::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background-color: #c0bcbe;
+  }
+  
+  .footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .footer-section ul li {
+    margin-bottom: 8px;
+  }
+  
+  .footer-section ul li a {
+    color: #d1d5db;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+  }
+  
+  .footer-section ul li a:hover {
+    color: #565556;
+  }
+  
+  .footer-section p {
+    color: #9ca3af;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+  }
+  
+  .footer-bottom {
+    border-top: 1px solid #374151;
+    padding-top: 30px;
+    text-align: center;
+  }
+  
+  .footer-bottom p {
+    font-size: 14px;
+    color: #9ca3af;
+    opacity: 0.8;
+  }
+  
+  .footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .footer-social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: #d1d5db;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 18px;
+  }
+  
+  .footer-social a:hover {
+    background-color: #ec4899;
+    color: white;
+    transform: translateY(-2px);
+  }
+  
+  /* 반응형 디자인 */
+  @media (max-width: 768px) {
+    .footer {
+      padding: 30px 0 15px 0;
+    }
+    
+    .footer .container {
+      padding: 0 15px;
+    }
+    
+    .footer-enhanced {
+      padding: 40px 0 20px 0;
+    }
+    
+    .footer-content {
+      grid-template-columns: 1fr;
+      gap: 25px;
+      text-align: center;
+    }
+    
+    .footer-section h3::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .footer-social {
+      margin-bottom: 15px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .footer .container {
+      padding: 0 10px;
+    }
+    
+    .footer p {
+      font-size: 12px;
+    }
+    
+    .footer-bottom p {
+      font-size: 12px;
+    }
+    
+    .footer-social a {
+      width: 35px;
+      height: 35px;
+      font-size: 16px;
+    }
+  }
