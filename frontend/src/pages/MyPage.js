@@ -62,7 +62,6 @@ const MyPage = () => {
   };
 
   const handleSave = () => {
-    // 사용자 정보 업데이트
     const updatedUser = { ...user, ...formData };
     localStorage.setItem('user', JSON.stringify(updatedUser));
     setUser(updatedUser);
@@ -78,112 +77,92 @@ const MyPage = () => {
 
   return (
     <div className="mypage">
-      <div className="mypage-container">
-        {/* 좌측 사이드바 */}
-        <div className="sidebar">
-          <div className="sidebar-header">
-            <h2>마이페이지</h2>
-            <div className="user-welcome">
-              <span className="user-name">{user?.name || user?.email}님</span>
-              
-
-            
-            </div>
+      {/* 좌측 사이드바 컨테이너 */}
+      <div className="mypage-sidebar">
+        <div className="sidebar-header">
+          <h2>마이페이지</h2>
+          <div className="user-welcome">
+            <span className="user-name">{user?.username || user?.email}님</span>
           </div>
-          
-          <nav className="sidebar-nav">
-            {menuItems.map((item, index) => (
-              <div 
-                key={index} 
-                className={`nav-item ${item.name === activeMenu ? 'active' : ''}`}
-                onClick={() => setActiveMenu(item.name)}
-              >
-                {item.name}
-                {item.name === activeMenu && <span className="active-indicator"></span>}
-              </div>
-            ))}
-          </nav>
-          
-          <button className="logout-button" onClick={handleLogout}>
-            로그아웃
-          </button>
         </div>
+        
+        <nav className="sidebar-nav">
+          {menuItems.map((item, index) => (
+            <div 
+              key={index} 
+              className={`nav-item ${item.name === activeMenu ? 'active' : ''}`}
+              onClick={() => setActiveMenu(item.name)}
+            >
+              {item.name}
+              {item.name === activeMenu && <span className="active-indicator"></span>}
+            </div>
+          ))}
+        </nav>
+        
+        <button className="logout-button" onClick={handleLogout}>
+          로그아웃
+        </button>
+      </div>
 
-        {/* 우측 메인 컨텐츠 */}
-        <div className="main-content">
-          <div className="content-header">
-            <h1>회원정보 수정</h1>
+      {/* 우측 메인 컨텐츠 컨테이너 */}
+      <div className="mypage-content">
+        <div className="content-header">
+          <h1>회원정보 수정</h1>
+        </div>
+        
+        <div className="form-container">
+          <div className="form-row">
+            <div className="form-group">
+              <label>이름</label>
+              <input 
+                type="text" 
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                placeholder="이름을 입력하세요"
+              />
+            </div>
+            
           </div>
-          
-          <div className="form-container">
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>이메일</label>
+              <input 
+                type="email" 
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="이메일을 입력하세요"
+              />
+            </div>
+          </div>
+
+          <div className="password-section">
+            <h3>비밀번호 변경하기</h3>
             <div className="form-row">
               <div className="form-group">
-                <label>이름</label>
-                <input 
-                  type="text" 
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  placeholder="이름을 입력하세요"
-                />
+                <label>현재 비밀번호</label>
+                <input type="password" placeholder="현재 비밀번호를 입력하세요" />
               </div>
               <div className="form-group">
-                <label>휴대폰 번호</label>
-                <input 
-                  type="text" 
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  placeholder="휴대폰 번호를 입력하세요"
-                />
+                <label>신규 비밀번호</label>
+                <input type="password" placeholder="새 비밀번호를 입력하세요" />
               </div>
             </div>
-
             <div className="form-row">
               <div className="form-group">
-                <label>이메일</label>
-                <input 
-                  type="email" 
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="이메일을 입력하세요"
-                />
+                <label>신규 비밀번호 확인</label>
+                <input type="password" placeholder="새 비밀번호를 다시 입력하세요" />
               </div>
-              
             </div>
+          </div>
 
-            <div className="form-row">
-              <div className="form-group full-width">
-              </div>
-            </div>
-
-            <div className="password-section">
-              <h3>비밀번호 변경하기</h3>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>현재 비밀번호</label>
-                  <input type="password" placeholder="현재 비밀번호를 입력하세요" />
-                </div>
-                <div className="form-group">
-                  <label>신규 비밀번호</label>
-                  <input type="password" placeholder="새 비밀번호를 입력하세요" />
-                </div>
-              </div>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>신규 비밀번호 확인</label>
-                  <input type="password" placeholder="새 비밀번호를 다시 입력하세요" />
-                </div>
-              </div>
-            </div>
-
-            <div className="form-actions">
-              <button type="button" className="cancel-button">취소</button>
-              <button type="button" className="save-button" onClick={handleSave}>
-                개인정보 업데이트
-              </button>
-            </div>
+          <div className="form-actions">
+            <button type="button" className="cancel-button">취소</button>
+            <button type="button" className="save-button" onClick={handleSave}>
+              개인정보 업데이트
+            </button>
           </div>
         </div>
       </div>
