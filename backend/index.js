@@ -6,6 +6,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import authRouter from "./routes/auth.js";
 
+
 dotenv.config();
 
 const app = express();
@@ -30,10 +31,10 @@ app.use("/auth", authRouter);
 
 // MySQL 연결
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "1234",
-  database: "shoppingmall"
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME
 });
 
 db.connect(err => {
@@ -78,4 +79,5 @@ app.listen(PORT, () => {
   console.log(`🌐 API Endpoints:`);
   console.log(`   - GET  /products`);
   console.log(`   - GET  /products/:id`);
+  
 });
