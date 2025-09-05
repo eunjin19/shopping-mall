@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import mysql from "mysql2";
 import path from "path";
 import { fileURLToPath } from "url";
+import authRouter from "./routes/auth.js";
 
 dotenv.config();
 
@@ -19,6 +20,9 @@ app.use(express.json());
 
 // 정적 파일 제공
 app.use("/images", express.static(path.join(__dirname, "images")));
+
+app.use("/auth", authRouter);
+
 
 
 

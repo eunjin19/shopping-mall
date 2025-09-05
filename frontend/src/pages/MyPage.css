@@ -1,78 +1,358 @@
-/* MyPage.css */
+.mypage {
+  min-height: 100vh;
+  background-color: #f8f9ff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
 
 .mypage-container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* 좌측 사이드바 */
+.sidebar {
+  width: 280px;
+  background: linear-gradient(180deg, #e8ecff 0%, #f0f4ff 100%);
+  padding: 0;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar-header {
+  padding: 2rem 1.5rem 1.5rem;
+  border-bottom: 1px solid rgba(111, 126, 234, 0.1);
+}
+
+.sidebar-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.user-welcome {
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(111, 126, 234, 0.1);
+}
+
+.user-name {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.user-grade {
+  display: flex;
+  align-items: center;
+}
+
+.grade-badge {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.sidebar-nav {
+  padding: 1rem 0;
+}
+
+.nav-item {
+  position: relative;
+  padding: 1rem 1.5rem;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+}
+
+.nav-item:hover {
+  background-color: rgba(102, 126, 234, 0.08);
+  color: #667eea;
+}
+
+.nav-item.active {
+  background-color: rgba(102, 126, 234, 0.12);
+  color: #667eea;
+  border-left-color: #667eea;
+  font-weight: 600;
+}
+
+.active-indicator {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  background: #667eea;
+  border-radius: 50%;
+}
+
+.logout-button {
+  position: absolute;
+  bottom: 2rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-button:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+/* 우측 메인 컨텐츠 */
+.main-content {
+  flex: 1;
+  margin-left: 280px;
+  padding: 2rem;
+  background: white;
+}
+
+.content-header {
+  margin-bottom: 2rem;
+}
+
+.content-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+  margin-left: -41px;
+}
+
+.form-container {
+  max-width: 800px;
+}
+
+.form-row {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  flex: 1;
+}
+
+.form-group.full-width {
+  flex: 1;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+  background: white;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input::placeholder {
+  color: #a0aec0;
+}
+
+.input-with-button {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input-with-button input {
+  flex: 1;
+}
+
+.search-button {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.search-button:hover {
+  background: #5a67d8;
+}
+
+.password-section {
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+
+.password-section h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+}
+
+.password-info {
+  display: flex;
+  align-items: flex-end;
+  
+  padding-top: 80px;
+}
+
+
+.password-info small {
+  color: #718096;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.cancel-button {
+  background: #f7fafc;
+  color: #4a5568;
+  border: 1px solid #e2e8f0;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-button:hover {
+  background: #edf2f7;
+  border-color: #cbd5e0;
+}
+
+.save-button {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-button:hover {
+  background: #5a67d8;
+  transform: translateY(-1px);
+}
+
+/* 로딩 상태 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #f8f9ff;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(102, 126, 234, 0.1);
+  border-top: 3px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 250px;
   }
   
-  .mypage-container h2 {
-    text-align: center;
-    color: #333;
+  .main-content {
+    margin-left: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    position: relative;
+    height: auto;
   }
   
-  .section {
-    margin-top: 30px;
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
   }
   
-  .section h3 {
-    color: #555;
-    margin-bottom: 15px;
-  }
-  
-  .input-group {
-    display: flex;
+  .form-row {
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 15px;
+    gap: 1rem;
   }
   
-  .input-group input {
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 14px;
+  .form-actions {
+    flex-direction: column;
   }
   
-  .button-group {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+  .input-with-button {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-header h1 {
+    font-size: 1.5rem;
   }
   
-  .button-group button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 8px;
-    background-color: #4caf50;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s;
+  .sidebar-header {
+    padding: 1.5rem 1rem;
   }
   
-  .button-group button:hover {
-    background-color: #45a049;
+  .form-actions {
+    gap: 0.5rem;
   }
   
-  .user-info p {
-    margin: 6px 0;
+  .cancel-button,
+  .save-button {
+    width: 100%;
   }
-  
-  .order-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .order-list li {
-    padding: 12px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    background-color: #f0f0f0;
-  }
-  
+}

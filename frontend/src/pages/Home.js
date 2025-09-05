@@ -14,7 +14,6 @@ const Home = () => {
       title: "신제품 출시",
       subtitle: "품격 있는 아름다움",
       description: "지금 최대 30% 할인",
-      buttonText: "지금 구매하기",
       backgroundImage: "/1.jpg",   // ✅ public/1.jpg
       className: ""
     },
@@ -23,7 +22,6 @@ const Home = () => {
       title: "프리미엄 스킨케어",
       subtitle: "자연에서 온 순수함",
       description: "새로운 세럼 라인 출시",
-      buttonText: "컬렉션 보기",
       backgroundImage: "/2.jpg",   
       className: ""
     },
@@ -32,7 +30,6 @@ const Home = () => {
       title: "한정 에디션",
       subtitle: "특별한 순간을 위한",
       description: "독점 할인 혜택",
-      buttonText: "특가 상품 보기",
       backgroundImage: "/4.jpg",   
       className: ""
     }
@@ -132,7 +129,6 @@ const Home = () => {
                     <span className="highlight">{slide.subtitle}</span>
                   </h1>
                   <p className="banner-subtitle">{slide.description}</p>
-                  <button className="banner-cta">{slide.buttonText}</button>
                 </div>
               </div>
             </div>

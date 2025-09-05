@@ -1,146 +1,192 @@
-import React, { useEffect, useState } from 'react';
-import { getUserInfo, getOrderHistory } from '../utils/api';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './MyPage.css';
 
 const MyPage = () => {
-  const [userInfo, setUserInfo] = useState(null);
-  const [orders, setOrders] = useState([]);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loginUsername, setLoginUsername] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-  const [token, setToken] = useState(localStorage.getItem('token') || '');
+  const [activeMenu, setActiveMenu] = useState('회원정보');
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    address: '',
+    detailAddress: '',
+    postalCode: ''
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-      try {
-        const decodedToken = JSON.parse(atob(token.split('.')[1]));
-        const userId = decodedToken.userId;
+    checkLoginStatus();
+  }, []);
 
-        const user = await getUserInfo(userId, token);
-        const orderHistory = await getOrderHistory(userId, token);
-
-        setUserInfo(user);
-        setOrders(orderHistory);
-      } catch (error) {
-        console.error(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [token]);
-
-  const handleRegister = async () => {
+  const checkLoginStatus = () => {
     try {
-      const res = await axios.post('/auth/register', { username, email, password });
-      alert(res.data.message);
-      setUsername('');
-      setEmail('');
-      setPassword('');
-    } catch (err) {
-      alert(err.response?.data?.message || '회원가입 실패');
-    }
-  };
-
-  const handleLogin = async () => {
-    try {
-      const res = await axios.post('/auth/login', { username: loginUsername, password: loginPassword });
-      const { token, user } = res.data.data;
-      localStorage.setItem('token', token);
-      setToken(token);
-      setUserInfo(user);
-      setLoginUsername('');
-      setLoginPassword('');
-    } catch (err) {
-      alert(err.response?.data?.message || '로그인 실패');
+      const token = localStorage.getItem('token');
+      const userData = localStorage.getItem('user');
+      
+      if (token && userData) {
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
+        setFormData({
+          name: parsedUser.name || '',
+          phone: parsedUser.phone || '',
+          email: parsedUser.email || '',
+          address: parsedUser.address || '',
+          detailAddress: parsedUser.detailAddress || '',
+          postalCode: parsedUser.postalCode || ''
+        });
+      } else {
+        navigate('/auth');
+      }
+    } catch (error) {
+      console.error('로그인 상태 확인 실패:', error);
+      navigate('/auth');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    setToken('');
-    setUserInfo(null);
-    setOrders([]);
+    localStorage.removeItem('user');
+    navigate('/auth');
   };
 
-  const handleDeleteAccount = async () => {
-    if (!token) return;
-    try {
-      const decodedToken = JSON.parse(atob(token.split('.')[1]));
-      const userId = decodedToken.userId;
-
-      await axios.delete(`/users/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      alert('계정이 삭제되었습니다.');
-      handleLogout();
-    } catch (err) {
-      alert(err.response?.data?.message || '계정 삭제 실패');
-    }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  if (loading) return <p>로딩 중...</p>;
+  const handleSave = () => {
+    // 사용자 정보 업데이트
+    const updatedUser = { ...user, ...formData };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    setUser(updatedUser);
+    alert('회원정보가 수정되었습니다.');
+  };
+
+  const menuItems = [
+    { name: '회원정보', active: true },
+    { name: '주문내역', active: false },
+    { name: '배송조회', active: false },
+    { name: '1:1문의', active: false },
+  ];
 
   return (
-    <div className="mypage-container">
-      <h2>마이페이지</h2>
+    <div className="mypage">
+      <div className="mypage-container">
+        {/* 좌측 사이드바 */}
+        <div className="sidebar">
+          <div className="sidebar-header">
+            <h2>마이페이지</h2>
+            <div className="user-welcome">
+              <span className="user-name">{user?.name || user?.email}님</span>
+              
 
-      {!token ? (
-        <div className="section">
-          <h3>회원가입</h3>
-          <div className="input-group">
-            <input placeholder="사용자명" value={username} onChange={(e) => setUsername(e.target.value)} />
-            <input placeholder="이메일" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <input type="password" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} />
+            
+            </div>
           </div>
-          <div className="button-group">
-            <button onClick={handleRegister}>회원가입</button>
-          </div>
+          
+          <nav className="sidebar-nav">
+            {menuItems.map((item, index) => (
+              <div 
+                key={index} 
+                className={`nav-item ${item.name === activeMenu ? 'active' : ''}`}
+                onClick={() => setActiveMenu(item.name)}
+              >
+                {item.name}
+                {item.name === activeMenu && <span className="active-indicator"></span>}
+              </div>
+            ))}
+          </nav>
+          
+          <button className="logout-button" onClick={handleLogout}>
+            로그아웃
+          </button>
+        </div>
 
-          <h3>로그인</h3>
-          <div className="input-group">
-            <input placeholder="사용자명" value={loginUsername} onChange={(e) => setLoginUsername(e.target.value)} />
-            <input type="password" placeholder="비밀번호" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} />
+        {/* 우측 메인 컨텐츠 */}
+        <div className="main-content">
+          <div className="content-header">
+            <h1>회원정보 수정</h1>
           </div>
-          <div className="button-group">
-            <button onClick={handleLogin}>로그인</button>
+          
+          <div className="form-container">
+            <div className="form-row">
+              <div className="form-group">
+                <label>이름</label>
+                <input 
+                  type="text" 
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="이름을 입력하세요"
+                />
+              </div>
+              <div className="form-group">
+                <label>휴대폰 번호</label>
+                <input 
+                  type="text" 
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  placeholder="휴대폰 번호를 입력하세요"
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>이메일</label>
+                <input 
+                  type="email" 
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="이메일을 입력하세요"
+                />
+              </div>
+              
+            </div>
+
+            <div className="form-row">
+              <div className="form-group full-width">
+              </div>
+            </div>
+
+            <div className="password-section">
+              <h3>비밀번호 변경하기</h3>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>현재 비밀번호</label>
+                  <input type="password" placeholder="현재 비밀번호를 입력하세요" />
+                </div>
+                <div className="form-group">
+                  <label>신규 비밀번호</label>
+                  <input type="password" placeholder="새 비밀번호를 입력하세요" />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>신규 비밀번호 확인</label>
+                  <input type="password" placeholder="새 비밀번호를 다시 입력하세요" />
+                </div>
+              </div>
+            </div>
+
+            <div className="form-actions">
+              <button type="button" className="cancel-button">취소</button>
+              <button type="button" className="save-button" onClick={handleSave}>
+                개인정보 업데이트
+              </button>
+            </div>
           </div>
         </div>
-      ) : (
-        <div className="section">
-          <div className="button-group">
-            <button onClick={handleLogout}>로그아웃</button>
-            <button onClick={handleDeleteAccount}>회원 탈퇴</button>
-          </div>
-
-          <div className="user-info">
-            <p>이름: {userInfo.name || userInfo.username}</p>
-            <p>이메일: {userInfo.email}</p>
-          </div>
-
-          <h3>주문 내역</h3>
-          <ul className="order-list">
-            {orders.length === 0 ? (
-              <p>주문 내역이 없습니다.</p>
-            ) : (
-              orders.map((order) => (
-                <li key={order.id}>
-                  주문번호: {order.id} - 총액: {order.total}원
-                </li>
-              ))
-            )}
-          </ul>
-        </div>
-      )}
+      </div>
     </div>
   );
 };

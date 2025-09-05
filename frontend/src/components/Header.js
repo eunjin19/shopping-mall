@@ -33,21 +33,25 @@ const Header = () => {
             <Link to="/">Blank.</Link>
           </div>
           
-          {/* 데스크톱 메뉴 */}
-          <div className="navbar-menu">
-            <Link to="/" className="navbar-menu-item">홈</Link>
-            <Link to="/products" className="navbar-menu-item">상품</Link>
-            
-            
+          {/* 중앙 검색창 */}
+          <div className="navbar-search">
+            <form className="search-form">
+              <input
+                type="text"
+                name="search"
+                placeholder="검색어를 입력하세요"
+                className="search-input"
+              />
+              <button type="submit" className="search-submit-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+              </button>
+            </form>
           </div>
           
           {/* 우측 아이콘들 */}
           <div className="navbar-actions">
-            <button className="navbar-icon-btn search-btn">
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-              </svg>
-            </button>
             <Link to="/cart" className="navbar-icon-btn cart-btn">
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
@@ -66,6 +70,12 @@ const Header = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
+        </div>
+        
+        {/* 데스크톱 메뉴 (검색창 아래) */}
+        <div className="navbar-menu">
+          <Link to="/" className="navbar-menu-item">HOME</Link>
+          <Link to="/products" className="navbar-menu-item">PRODUCT</Link>
         </div>
         
         {/* 모바일 메뉴 */}

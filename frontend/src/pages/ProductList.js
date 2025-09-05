@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom"; // 상세페이지 이동용
-import { getProducts } from "../utils/api"; // API 호출 함수
+// import { Link } from "react-router-dom"; // 사용하지 않으므로 제거
+// import { getProducts } from "../utils/api"; // 사용하지 않으므로 제거
 import axios from "axios";
-import "./ProductList.css"; // CSS 파일 임포트
+import "./ProductList.css";
 
 const ProductListPage = () => {
   const [list, setList] = useState([]);
@@ -24,7 +24,9 @@ const ProductListPage = () => {
     };
 
     fetchProducts();
-  }, []); // [] 두번째 매개변수를 통해 최초 한번만 가져오도록 함
+  }, []);
+
+  // 나머지 코드는 그대로 유지...
 
   // 가격 포맷팅 함수
   const formatPrice = (price) => {
@@ -40,7 +42,7 @@ const ProductListPage = () => {
   if (loading) {
     return (
       <div className="product-list">
-        <h1>상품 목록</h1>
+        <h1>PRODUCT LIST</h1>
         <div className="product-grid">
           {[...Array(6)].map((_, index) => (
             <div key={index} className="product-card loading-card" style={{height: '300px'}}></div>
@@ -52,7 +54,7 @@ const ProductListPage = () => {
 
   return (
     <div className="product-list">
-      <h1>상품 목록</h1>
+      <h1>PRODUCT LIST</h1>
       
       {list.length === 0 ? (
         <div className="no-data">
