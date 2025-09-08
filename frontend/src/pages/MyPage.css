@@ -115,7 +115,7 @@
   min-height: 100vh;
   max-width: 800px;
   overflow-x: hidden;
-  margin-left: 140px;
+  margin-left: 228px;
 
 }
 
@@ -129,7 +129,7 @@
   font-weight: 600;
   color: #2d3748;
   margin: 0;
-  margin-right: 240px;
+  margin-right: 320px;
 }
 
 .mypage-content .form-container {
@@ -370,3 +370,40 @@
     width: 100%;
   }
 }
+
+/* ===== 메시지 텍스트 ===== */
+.error-text {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #e11d48; /* 빨간색 */
+}
+
+.success-text {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #22c55e; /* 초록색 */
+}
+
+.info-text {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* 검증 전 비활성화된 인풋의 시각적 표시 */
+.mypage-content .form-group input:disabled {
+  background: #f8fafc;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* 비밀번호 섹션의 하단 버튼 줄은 상단 구분선 제거 */
+.mypage-content .form-actions.no-border {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+}
+

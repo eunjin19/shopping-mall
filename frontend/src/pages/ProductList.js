@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import { Link } from "react-router-dom"; // 사용하지 않으므로 제거
-// import { getProducts } from "../utils/api"; // 사용하지 않으므로 제거
 import axios from "axios";
 import "./ProductList.css";
 
@@ -15,7 +13,7 @@ const ProductListPage = () => {
         const response = await axios.get("http://localhost:5000/products");
         console.log("res", response.data);
         setList(response.data);
-        console.log("list", response.data);
+        // console.log("list", response.data);
       } catch (error) {
         console.error("상품 데이터 로딩 오류:", error);
       } finally {
@@ -64,28 +62,29 @@ const ProductListPage = () => {
         <div className="product-grid">
           {list.map((item) => (
             <div key={item.id} className="product-card">
-              <div className="product-image">
-                {item.image ? (
-                  <img src={item.image} alt={item.name} />
-                ) : (
-                  <div className="no-image">이미지 없음</div>
-                )}
-              </div>
+            <div className="product-image">
+              {item.image ? (
+                <img src= {`${item.image}`}/>
+              ) : (
+                <div className="no-image">이미지 없음</div>
+              )}
+            </div>
+
+            
+            <div className="product-info">
+              <div className="product-brand">{item.brand || 'No Brand'}</div>
+              <div className="product-name">{item.name}</div>
+              <div className="product-description">{item.description}</div>
+              <div className="product-price">{formatPrice(item.price)}</div>
               
-              <div className="product-info">
-                <div className="product-brand">{item.brand || 'No Brand'}</div>
-                <div className="product-name">{item.name}</div>
-                <div className="product-description">{item.description}</div>
-                <div className="product-price">{formatPrice(item.price)}</div>
-                
-                <div className="product-meta">
-                  <span className={`product-stock ${item.stock <= 0 ? 'out-of-stock' : ''}`}>
-                    {item.stock > 0 ? `재고 ${item.stock}개` : '품절'}
-                  </span>
-                  <span className="product-date">{formatDate(item.created_at)}</span>
-                </div>
+              <div className="product-meta">
+                <span className={`product-stock ${item.stock <= 0 ? 'out-of-stock' : ''}`}>
+                  {item.stock > 0 ? `재고 ${item.stock}개` : '품절'}
+                </span>
+                <span className="product-date">{formatDate(item.created_at)}</span>
               </div>
             </div>
+          </div>
           ))}
         </div>
       )}

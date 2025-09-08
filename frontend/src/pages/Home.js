@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";   // ✅ 추가
 import ProductCard from '../components/ProductCard';
 import './Home.css';
 
@@ -14,7 +15,7 @@ const Home = () => {
       title: "신제품 출시",
       subtitle: "품격 있는 아름다움",
       description: "지금 최대 30% 할인",
-      backgroundImage: "/1.jpg",   // ✅ public/1.jpg
+      backgroundImage: "/1.jpg",
       className: ""
     },
     {
@@ -22,7 +23,7 @@ const Home = () => {
       title: "프리미엄 스킨케어",
       subtitle: "자연에서 온 순수함",
       description: "새로운 세럼 라인 출시",
-      backgroundImage: "/2.jpg",   
+      backgroundImage: "/2.jpg",
       className: ""
     },
     {
@@ -30,7 +31,7 @@ const Home = () => {
       title: "한정 에디션",
       subtitle: "특별한 순간을 위한",
       description: "독점 할인 혜택",
-      backgroundImage: "/4.jpg",   
+      backgroundImage: "/4.jpg",
       className: ""
     }
   ];
@@ -55,6 +56,7 @@ const Home = () => {
         const featured = products.filter(product => product.featured).slice(0, 6);
         setFeaturedProducts(featured);
       } else {
+        // ✅ 데모 데이터
         const demoProducts = [
           { 
             id: 1, 
@@ -136,14 +138,10 @@ const Home = () => {
         </div>
         
         {/* 슬라이더 화살표 */}
-        <button className="slider-arrow prev" onClick={prevSlide}>
-          ❮
-        </button>
-        <button className="slider-arrow next" onClick={nextSlide}>
-          ❯
-        </button>
+        <button className="slider-arrow prev" onClick={prevSlide}>❮</button>
+        <button className="slider-arrow next" onClick={nextSlide}>❯</button>
         
-        {/* 슬라이더 네비게이션 점들 */}
+        {/* 슬라이더 네비게이션 점 */}
         <div className="slider-nav">
           {bannerSlides.map((_, index) => (
             <button
@@ -170,7 +168,13 @@ const Home = () => {
           ) : featuredProducts.length > 0 ? (
             <div className="product-grid">
               {featuredProducts.map(product => (
-                <ProductCard key={product.id} product={product} />
+                <Link 
+                  key={product.id} 
+                  to={"/products"}   // ✅ 상세 페이지 이동
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <ProductCard product={product} />
+                </Link>
               ))}
             </div>
           ) : (

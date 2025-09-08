@@ -13,6 +13,9 @@ import Cart from './pages/Cart';
 import MyPage from './pages/MyPage';
 import AuthPage from './pages/AuthPage';
 
+//admin
+import AdminProductPage from './pages/admin/AdminProductPage';
+
 function App() {
   return (
     <Router>
@@ -25,6 +28,7 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/mypage" element={<MyPage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/admin/products" element={<AdminProductPage />} />
           </Routes>
         </main>
         <Footer />

@@ -53,4 +53,65 @@ router.post("/login", (req, res) => {
   });
 });
 
+// 현재 비밀번호 확인
+router.post("/verify-password", (req, res) => {
+  const { userId, currentPassword } = req.body;
+  if (!userId || !currentPassword) {
+    return res.status(400).json({ message: "필수 값 누락" });
+  }
+
+  db.query("SELECT * FROM users WHERE id = ?", [userId], (err, rows) => {
+    if (err) return res.status(500).json({ message: "DB 오류" });
+    if (rows.length === 0) return res.status(404).json({ message: "사용자 없음" });
+
+    const user = rows[0];
+    bcrypt.compare(currentPassword, user.password, (err, isMatch) => {
+      if (err) return res.status(500).json({ message: "검증 오류" });
+      if (!isMatch) return res.json({ valid: false });
+
+      res.json({ valid: true });
+    });
+  });
+});
+// 비밀번호 변경
+router.post("/change-password", (req, res) => {
+  const { username, email, currentPassword, newPassword } = req.body;
+
+  if ((!username && !email) || !currentPassword || !newPassword) {
+    return res.status(400).json({ message: "필수 값 누락" });
+  }
+
+  // username 또는 email로 사용자 조회
+  const query = username ? "SELECT * FROM users WHERE username = ?" : "SELECT * FROM users WHERE email = ?";
+  const value = username ? username : email;
+
+
+  db.query(query, [value], (err, rows) => {
+    if (err) return res.status(500).json({ message: "DB 오류" });
+    if (rows.length === 0)
+      return res.status(404).json({ message: "사용자를 찾을 수 없음" });
+
+    const user = rows[0];
+
+    // 현재 비밀번호 확인
+    bcrypt.compare(currentPassword, user.password, async (err, isMatch) => {
+      if (err) return res.status(500).json({ message: "검증 오류" });
+      if (!isMatch)
+        return res.status(400).json({ message: "현재 비밀번호 불일치" });
+
+      // 새 비밀번호 해시 후 업데이트
+      const hashedPw = await bcrypt.hash(newPassword, 10);
+      db.query(
+        "UPDATE users SET password = ? WHERE id = ?",
+        [hashedPw, user.id],
+        (err) => {
+          if (err) return res.status(500).json({ message: "비밀번호 변경 실패" });
+          res.json({ success: true, message: "비밀번호가 성공적으로 변경되었습니다." });
+        }
+      );
+    });
+  });
+});
+
+
 export default router;
