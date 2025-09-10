@@ -13,19 +13,19 @@ const Login = ({ onLoginSuccess, onSwitchToRegister }) => {
       alert("사용자명과 비밀번호를 모두 입력해주세요.");
       return;
     }
-
+  
     setLoading(true);
     try {
       const res = await axios.post("http://localhost:5000/auth/login", {
         username: username.trim(),
         password: password.trim(),
       });
-
-      const { token, user } = res.data.data;
+  
+      const { token, user } = res.data; // 👈 수정됨
       localStorage.setItem("token", token);
       alert("로그인이 완료되었습니다.");
       onLoginSuccess?.(token, user);
-
+  
       setUsername("");
       setPassword("");
     } catch (err) {
@@ -35,6 +35,7 @@ const Login = ({ onLoginSuccess, onSwitchToRegister }) => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="login-container">

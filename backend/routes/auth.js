@@ -1,10 +1,10 @@
-// backend/routes/auth.js
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { db } from "../db.js";
 
 const router = express.Router();
+const JWT_SECRET = "my-secret-key"; // 환경변수로 빼는 게 안전
 
 // 회원가입
 router.post("/register", (req, res) => {
@@ -40,15 +40,26 @@ router.post("/login", (req, res) => {
 
     const user = rows[0];
     bcrypt.compare(password, user.password, (err, isMatch) => {
+      if (err) return res.status(500).json({ message: "비밀번호 검증 오류" });
       if (!isMatch) return res.status(400).json({ message: "비밀번호 불일치" });
 
       const token = jwt.sign(
         { id: user.id, username: user.username, role: user.role },
-        "my-secret-key",
+        JWT_SECRET,
         { expiresIn: "1h" }
       );
 
-      res.json({ message: "로그인 성공", data: { token, user } });
+      // 👇 프론트엔드가 받기 쉽게 수정
+      res.json({
+        message: "로그인 성공",
+        token,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+        },
+      });
     });
   });
 });
@@ -73,6 +84,7 @@ router.post("/verify-password", (req, res) => {
     });
   });
 });
+
 // 비밀번호 변경
 router.post("/change-password", (req, res) => {
   const { username, email, currentPassword, newPassword } = req.body;
@@ -81,10 +93,10 @@ router.post("/change-password", (req, res) => {
     return res.status(400).json({ message: "필수 값 누락" });
   }
 
-  // username 또는 email로 사용자 조회
-  const query = username ? "SELECT * FROM users WHERE username = ?" : "SELECT * FROM users WHERE email = ?";
+  const query = username
+    ? "SELECT * FROM users WHERE username = ?"
+    : "SELECT * FROM users WHERE email = ?";
   const value = username ? username : email;
-
 
   db.query(query, [value], (err, rows) => {
     if (err) return res.status(500).json({ message: "DB 오류" });
@@ -93,25 +105,25 @@ router.post("/change-password", (req, res) => {
 
     const user = rows[0];
 
-    // 현재 비밀번호 확인
     bcrypt.compare(currentPassword, user.password, async (err, isMatch) => {
       if (err) return res.status(500).json({ message: "검증 오류" });
       if (!isMatch)
         return res.status(400).json({ message: "현재 비밀번호 불일치" });
 
-      // 새 비밀번호 해시 후 업데이트
       const hashedPw = await bcrypt.hash(newPassword, 10);
       db.query(
         "UPDATE users SET password = ? WHERE id = ?",
         [hashedPw, user.id],
         (err) => {
           if (err) return res.status(500).json({ message: "비밀번호 변경 실패" });
-          res.json({ success: true, message: "비밀번호가 성공적으로 변경되었습니다." });
+          res.json({
+            success: true,
+            message: "비밀번호가 성공적으로 변경되었습니다.",
+          });
         }
       );
     });
   });
 });
-
 
 export default router;
