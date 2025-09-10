@@ -160,15 +160,17 @@
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-top: 10px;
+    margin-top: 4px;
+    width: 122px;
+    margin-bottom: 12px;
   }
   
   .cart-button:hover:not(:disabled) {
-    background-color: #cacaca;
+    background-color: #e4e2e2;
   }
   
   .cart-button:disabled {
-    background-color: #ccc;
+    background-color: #e7e7e7;
     cursor: not-allowed;
   }
   
