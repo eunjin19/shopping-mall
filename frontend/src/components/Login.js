@@ -25,6 +25,8 @@ const Login = ({ onLoginSuccess, onSwitchToRegister }) => {
       localStorage.setItem("token", token);
       alert("로그인이 완료되었습니다.");
       onLoginSuccess?.(token, user);
+      // ⬇️ role도 저장
+      localStorage.setItem("user", JSON.stringify(user));
   
       setUsername("");
       setPassword("");

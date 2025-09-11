@@ -7,10 +7,11 @@ import path from "path";
 import { fileURLToPath } from "url";
 import multer from "multer";
 import fs from "fs";
+import jwt from "jsonwebtoken";
 
 // 라우터 불러오기
 import authRouter from "./routes/auth.js";
-import cartRouter from "./routes/cart.js"; // ✅ 장바구니 라우터 분리
+import cartRouter from "./routes/cart.js";
 
 dotenv.config();
 
@@ -23,6 +24,9 @@ const __dirname = path.dirname(__filename);
 // 미들웨어
 app.use(cors());
 app.use(express.json());
+
+// JWT 시크릿 키 (환경변수로 설정하는 것이 좋습니다)
+const JWT_SECRET = process.env.JWT_SECRET || "my-secret-key";
 
 // 로그인/회원가입 라우터
 app.use("/auth", authRouter);
@@ -58,6 +62,39 @@ connection.connect((err) => {
 // ✅ 다른 라우터에서 DB 사용 가능하게 export
 export const db = connection;
 
+/* ------------------------ 인증 미들웨어 ------------------------ */
+
+// ✅ 토큰 검증 미들웨어
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+
+  if (!token) {
+    return res.status(401).json({ message: '토큰이 필요합니다' });
+  }
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: '유효하지 않은 토큰입니다' });
+    }
+    req.user = user;
+    next();
+  });
+};
+
+// ✅ 관리자 권한 검증 미들웨어
+const requireAdmin = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ message: '인증이 필요합니다' });
+  }
+  
+  if (req.username.role !== 'admin') {
+    return res.status(403).json({ message: '관리자 권한이 필요합니다' });
+  }
+  
+  next();
+};
+
 /* ------------------------ 파일 업로드 & 상품 API ------------------------ */
 
 // Multer 설정
@@ -87,8 +124,8 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB 제한
 });
 
-// 이미지 업로드
-app.post("/upload-image", upload.single("image"), (req, res) => {
+// ✅ 이미지 업로드 (관리자만)
+app.post("/upload-image", authenticateToken, requireAdmin, upload.single("image"), (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: "이미지 파일이 필요합니다." });
@@ -104,7 +141,7 @@ app.post("/upload-image", upload.single("image"), (req, res) => {
   }
 });
 
-// 상품 목록 조회
+// 상품 목록 조회 (모든 사용자)
 app.get("/products", (req, res) => {
   const sql = `SELECT id, name, brand, price, description, image, stock, created_at
                 FROM products ORDER BY id DESC`;
@@ -114,7 +151,7 @@ app.get("/products", (req, res) => {
   });
 });
 
-// 특정 상품 조회
+// 특정 상품 조회 (모든 사용자)
 app.get("/products/:id", (req, res) => {
   const { id } = req.params;
   const sql = `SELECT * FROM products WHERE id = ?`;
@@ -124,8 +161,8 @@ app.get("/products/:id", (req, res) => {
   });
 });
 
-// 상품 등록
-app.post("/products", (req, res) => {
+// ✅ 상품 등록 (관리자만)
+app.post("/products", authenticateToken, requireAdmin, (req, res) => {
   const { name, brand, price, description, stock, image } = req.body;
   const sql = `INSERT INTO products (name, brand, price, description, image, stock)
                VALUES (?, ?, ?, ?, ?, ?)`;
@@ -147,8 +184,8 @@ app.post("/products", (req, res) => {
   );
 });
 
-// 상품 수정
-app.put("/products/:id", (req, res) => {
+// ✅ 상품 수정 (관리자만)
+app.put("/products/:id", authenticateToken, requireAdmin, (req, res) => {
   const { id } = req.params;
   const { name, brand, price, description, stock, image } = req.body;
   const sql = `UPDATE products
@@ -164,8 +201,8 @@ app.put("/products/:id", (req, res) => {
   );
 });
 
-// 상품 삭제
-app.delete("/products/:id", (req, res) => {
+// ✅ 상품 삭제 (관리자만)
+app.delete("/products/:id", authenticateToken, requireAdmin, (req, res) => {
   const { id } = req.params;
   const sql = `DELETE FROM products WHERE id=?`;
   connection.query(sql, [id], (err) => {
@@ -193,10 +230,10 @@ app.listen(PORT, () => {
   console.log(`🌐 API Endpoints:`);
   console.log(`   - GET    /products`);
   console.log(`   - GET    /products/:id`);
-  console.log(`   - POST   /products`);
-  console.log(`   - PUT    /products/:id`);
-  console.log(`   - DELETE /products/:id`);
-  console.log(`   - POST   /upload-image`);
+  console.log(`   - POST   /products (관리자 전용)`);
+  console.log(`   - PUT    /products/:id (관리자 전용)`);
+  console.log(`   - DELETE /products/:id (관리자 전용)`);
+  console.log(`   - POST   /upload-image (관리자 전용)`);
   console.log(`   - POST   /cart`);
   console.log(`   - GET    /cart/:userId`);
   console.log(`   - PATCH  /cart/:userId/:productId`);

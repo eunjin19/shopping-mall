@@ -9,29 +9,10 @@ const AdminProductPage = () => {
   const storedToken = localStorage.getItem("token");
   const user = storedUser ? JSON.parse(storedUser) : null;
 
-  console.log("user", user);
-  console.log("storedToken", storedToken);
-  console.log("user.role", user?.role);
+  console.log("user",user)
+  console.log("storedToken",storedToken)
+  console.log("user.role",user.role)
 
-  // ✅ 관리자 권한 체크
-  useEffect(() => {
-    if (!user || !storedToken || user.role !== "admin") {
-      alert("관리자만 접근할 수 있습니다.");
-      navigate("/");
-      return;
-    }
-  }, [user, storedToken, navigate]);
-
-  // ✅ axios 기본 헤더에 토큰 설정
-  useEffect(() => {
-    if (storedToken) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
-    }
-  }, [storedToken]);
-
-  // ----------------------------
-  // ✅ 상품 관리 관련 상태
-  // ----------------------------
   const [products, setProducts] = useState([]);
   const [form, setForm] = useState({
     name: "",
@@ -46,6 +27,22 @@ const AdminProductPage = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [uploading, setUploading] = useState(false);
 
+  // ✅ 관리자 권한 체크
+  // useEffect(() => {
+  //   if (!user || !storedToken || user.role !== "admin") {
+  //     alert("관리자만 접근할 수 있습니다.");
+  //     navigate("/");
+  //     return;
+  //   }
+  // }, [user, storedToken, navigate]);
+
+  // ✅ axios 기본 헤더에 토큰 설정
+  useEffect(() => {
+    if (storedToken) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+    }
+  }, [storedToken]);
+
   // ✅ 상품 불러오기
   const fetchProducts = async () => {
     try {
@@ -53,12 +50,20 @@ const AdminProductPage = () => {
       setProducts(res.data);
     } catch (err) {
       console.error("상품 목록 불러오기 실패:", err);
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        alert("인증이 만료되었습니다. 다시 로그인해주세요.");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login");
+      }
     }
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  // useEffect(() => {
+  //   if (user && storedToken && user.role === "admin") {
+  //     fetchProducts();
+  //   }
+  // }, [user, storedToken]);
 
   // ✅ 입력 변경
   const handleChange = (e) => {
@@ -78,12 +83,22 @@ const AdminProductPage = () => {
     try {
       setUploading(true);
       const res = await axios.post("http://localhost:5000/upload-image", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { 
+          "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${storedToken}`
+        },
       });
-      return res.data.filename; // 서버에서 반환한 파일명
+      return res.data.filename;
     } catch (err) {
       console.error("이미지 업로드 실패:", err);
-      alert("이미지 업로드에 실패했습니다 ❌");
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        alert("관리자 권한이 필요합니다. 다시 로그인해주세요.");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login");
+      } else {
+        alert("이미지 업로드에 실패했습니다 ❌");
+      }
       return null;
     } finally {
       setUploading(false);
@@ -143,12 +158,19 @@ const AdminProductPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const config = {
+        headers: {
+          "Authorization": `Bearer ${storedToken}`,
+          "Content-Type": "application/json"
+        }
+      };
+
       if (editingId) {
-        await axios.put(`http://localhost:5000/products/${editingId}`, form);
+        await axios.put(`http://localhost:5000/products/${editingId}`, form, config);
         alert("상품이 수정되었습니다 ✅");
         setEditingId(null);
       } else {
-        await axios.post("http://localhost:5000/products", form);
+        await axios.post("http://localhost:5000/products", form, config);
         alert("상품이 등록되었습니다 ✅");
       }
       setForm({ name: "", brand: "", price: "", description: "", image: "", stock: 100 });
@@ -156,7 +178,14 @@ const AdminProductPage = () => {
       fetchProducts();
     } catch (err) {
       console.error("상품 등록/수정 실패:", err);
-      alert("상품 등록/수정 중 오류 발생 ❌");
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        alert("관리자 권한이 필요합니다. 다시 로그인해주세요.");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login");
+      } else {
+        alert("상품 등록/수정 중 오류 발생 ❌");
+      }
     }
   };
 
@@ -173,15 +202,31 @@ const AdminProductPage = () => {
   const handleDelete = async (id) => {
     if (window.confirm("정말로 이 상품을 삭제하시겠습니까?")) {
       try {
-        await axios.delete(`http://localhost:5000/products/${id}`);
+        await axios.delete(`http://localhost:5000/products/${id}`, {
+          headers: {
+            "Authorization": `Bearer ${storedToken}`
+          }
+        });
         alert("상품이 삭제되었습니다 🗑️");
         fetchProducts();
       } catch (err) {
         console.error("상품 삭제 실패:", err);
-        alert("상품 삭제 중 오류 발생 ❌");
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          alert("관리자 권한이 필요합니다. 다시 로그인해주세요.");
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          navigate("/login");
+        } else {
+          alert("상품 삭제 중 오류 발생 ❌");
+        }
       }
     }
   };
+
+  // 권한이 없으면 아무것도 렌더링하지 않음
+  if (!user || !storedToken || user.role !== "admin") {
+    return null;
+  }
 
   return (
     <div className="admin-page">
@@ -195,7 +240,7 @@ const AdminProductPage = () => {
         <input name="stock" type="number" placeholder="재고" value={form.stock} onChange={handleChange} />
         <textarea name="description" placeholder="상품 설명" value={form.description} onChange={handleChange} />
 
-        {/* ✅ 이미지 업로드 */}
+        {/* ✅ 이미지 업로드 (드래그 & 드롭 + 클릭) */}
         <div
           className={`image-drop-zone ${isDragging ? "dragging" : ""}`}
           onDragOver={handleDragOver}
@@ -223,6 +268,7 @@ const AdminProductPage = () => {
       {/* ✅ 상품 목록 */}
       <div className="product-list">
         <h1>PRODUCT LIST</h1>
+
         {products.length === 0 ? (
           <div className="no-data">상품이 없습니다.</div>
         ) : (
@@ -231,7 +277,7 @@ const AdminProductPage = () => {
               <div key={item.id} className="product-card">
                 <div className="product-image">
                   {item.image ? (
-                    <img src={item.image} alt={item.name} />
+                    <img src={`http://localhost:5000${item.image}`} alt={item.name} />
                   ) : (
                     <div className="no-image">이미지 없음</div>
                   )}
@@ -246,18 +292,31 @@ const AdminProductPage = () => {
                   </div>
 
                   <div className="product-meta">
-                    <span className={`product-stock ${item.stock <= 0 ? "out-of-stock" : ""}`}>
+                    <span
+                      className={`product-stock ${
+                        item.stock <= 0 ? "out-of-stock" : ""
+                      }`}
+                    >
                       {item.stock > 0 ? `재고 ${item.stock}개` : "품절"}
                     </span>
                     <span className="product-date">
-                      {item.created_at ? new Date(item.created_at).toLocaleDateString("ko-KR") : "-"}
+                      {item.created_at
+                        ? new Date(item.created_at).toLocaleDateString("ko-KR")
+                        : "-"}
                     </span>
                   </div>
                 </div>
 
                 <div className="product-actions">
-                  <button className="edit-btn" onClick={() => handleEdit(item)}>✏️ 수정</button>
-                  <button className="delete-btn" onClick={() => handleDelete(item.id)}>🗑️ 삭제</button>
+                  <button className="edit-btn" onClick={() => handleEdit(item)}>
+                    ✏️ 수정
+                  </button>
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDelete(item.id)}
+                  >
+                    🗑️ 삭제
+                  </button>
                 </div>
               </div>
             ))}
